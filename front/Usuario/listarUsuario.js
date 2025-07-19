@@ -1,47 +1,34 @@
-let res = document.getElementById("res")
-let button = document.getElementById("button")
+async function listarUsuarios() {
+  const response = await fetch('http://localhost:3000/usuario');
+  return response.json();
+}
 
-button.addEventListener("click", (e) => {
-    e.preventDefault()
+document.addEventListener('DOMContentLoaded', async () => {
+  const tabela = document.querySelector('#tabelaUsuarios');
+  const usuarios = await listarUsuarios();
+  tabela.innerHTML = '';
+  usuarios.forEach(usuario => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${usuario.idUsuario || usuario.id}</td>
+      <td>${usuario.firstName}</td>
+      <td>${usuario.lastName}</td>
+      <td>${usuario.age}</td>
+      <td>${usuario.email}</td>
+      <td>${usuario.phone}</td>
+      <td>${usuario.address}</td>
+      <td>${usuario.city}</td>
+      <td>${usuario.state}</td>
+      <td>${usuario.birthDate ? usuario.birthDate.substring(0,10) : ''}</td>
+      <td>
+        <button class="edit-btn" onclick="window.location.href='atualizarUsuario.html?id=${usuario.idUsuario || usuario.id}'">Editar</button>
+      </td>
+    `;
+    tabela.appendChild(tr);
+  });
+});
 
-    fetch(`http://localhost:3000/usuario`, {
-        method: "GET",
-        headers: { "content-type": "application/json" }
-    })
-        .then(resp => resp.json())
-        .then(dados => {
-            let html = `<table border="1" cellpadding="8">
-            <tr>
-                <th>Código</th>
-                <th>Primeiro nome</th>
-                <th>Sobrenome</th>
-                <th>idade</th>
-                <th>email</th>
-                <th>telefone</th>
-                <th>cidade</th>
-                <th>estado</th>
-                <th>data de nascimento</th>
-            </tr>`
-
-
-            dados.forEach(dad =>{
-                html += `<tr>
-                <td>${dad.usuarioId}</td>
-                <td>${dad.firstName}</td>               
-                <td>${dad.lastName}</td>
-                <td>${dad.age}</td>
-                <td>${dad.email}</td>
-                <td>${dad.phone}</td>
-                <td>${dad.city}</td>
-                <td>${dad.state}</td>
-                <td>${dad.birthDate}</td>
-
-            </tr>`
-
-            console.log(dad)
-        })
-
-            html += `</table>`
-            res.innerHTML = html
-        })
-})
+function editarUsuario(id) {
+  // Redirecionar para página de edição (implementar depois)
+  alert('Função de edição em desenvolvimento.');
+} 
